@@ -198,6 +198,12 @@ def get_points():
     with _lock:
         return list(_read_points().values())
 
+def get_points_period(period):
+    """Список усіх точок конкретного періоду."""
+    l = []
+    with _lock:
+        return [value for value in _read_points().values() if str(value["period"]) == period]
+
 
 # Публічна назва для перевірки епохи (використовує server.py)
 parse_period = _parse_period

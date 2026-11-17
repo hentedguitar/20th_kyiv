@@ -79,11 +79,12 @@ class Handler(SimpleHTTPRequestHandler):
             if not isinstance(payload, dict):
                 raise ValueError("очікувався JSON-об'єкт")
             user_point = store.check_coordinates(payload.get("user_point"))   # [latitude, longitude]
+            period = payload.get("period")
         except (ValueError, UnicodeDecodeError) as err:
             return self._json(400, {"error": str(err)})
 
         try:
-            result = present(logic.on_user_point(user_point))
+            result = present(logic.on_user_point(user_point, period))
         except Exception as err:   # помилка у вашому коді з logic.py
             traceback.print_exc()
             return self._json(500, {"error": f"Помилка в logic.on_user_point: {err}"})

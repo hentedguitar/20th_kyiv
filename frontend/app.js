@@ -1,3 +1,4 @@
+var g_latlng;
 (function () {
   "use strict";
 
@@ -231,12 +232,11 @@
       : err.message;
   }
 
-  // POST user_point = [latitude, longitude] → відповідь logic.on_user_point
-  function askBackend(latlng) {
+  function askBackend(latlng, period) {
     return fetch(USER_POINT_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ user_point: [latlng.lat, latlng.lng] })
+      body: JSON.stringify({ user_point: [latlng.lat, latlng.lng], period: period })
     }).then(function (response) {
       return response.json().catch(function () { return {}; }).then(function (data) {
         if (!response.ok) throw new Error(data.error || "Помилка сервера (" + response.status + ")");
@@ -337,7 +337,7 @@
     nearestLayer.clearLayers();
   }
 
-  function placeUserPoint(latlng) {
+  function placeUserPoint(latlng, period) {
     nearestLayer.clearLayers();
     if (userMarker) map.removeLayer(userMarker);   // попередня точка зникає
     userMarker = L.marker(latlng, { icon: userIcon, interactive: false, keyboard: false }).addTo(map);
@@ -355,20 +355,24 @@
       if (overlap > 0) map.panBy([overlap, 0]);
     }
 
-    askBackend(latlng)
+    askBackend(latlng, period)
       .then(function (result) { if (id === requestId) renderResult(result); })
       .catch(function (err) { if (id === requestId) showState(errText(err), true); });
   }
 
   /* --- Події --- */
   // Клік по мапі: нова точка (лише всередині Києва), попередня зникає
-  map.on("click", function (e) {
+  map.addEventListener("click", function (e) {
     if (!isInsideKyiv(e.latlng)) {
       showStatus("Ця точка поза межами Києва. Оберіть місце в межах міста.", true, 3500);
       return;
     }
     hideStatus();
-    placeUserPoint(e.latlng);
+    placeUserPoint(e.latlng, slider.value);
+    g_latlng = e.latlng;
+  });
+  slider.addEventListener("change", function () {
+    placeUserPoint(g_latlng, Math.round(parseFloat(slider.value)).toString());
   });
 
   panelClose.addEventListener("click", closePanel);

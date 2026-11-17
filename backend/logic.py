@@ -93,13 +93,13 @@ def distance_m(a, b):
     return 2 * 6371000 * math.asin(math.sqrt(h))
 
 
-def nearest_points(user_point, limit=5):
+def nearest_points(user_point, period, limit=7):
     """Повертає до limit найближчих імпортованих точок до кліку користувача."""
-    points = store.get_points()
+    points = store.get_points_period(period)
     points.sort(key=lambda point: distance_m(user_point, point["coordinates"]))
     return points[:limit]
 
 
-def on_user_point(user_point):
+def on_user_point(user_point, period):
     """Повертає п'ять найближчих подій до [latitude, longitude]."""
-    return nearest_points(user_point, 5)
+    return nearest_points(user_point, period)
