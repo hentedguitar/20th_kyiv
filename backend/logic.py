@@ -104,3 +104,6 @@ def nearest_points(user_point, period, limit=7):
 def on_user_point(user_point, period):
     """Повертає п'ять найближчих подій до [latitude, longitude]."""
     return nearest_points(user_point, period)
+
+def on_period(period):
+    return store.get_points_period(period)

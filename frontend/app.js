@@ -1,4 +1,4 @@
-var g_latlng;
+var g_latlng = {lat:undefined, lng:undefined};
 (function () {
   "use strict";
 
@@ -278,7 +278,8 @@ var g_latlng;
 
     stateEl.hidden = true;
     dataList.textContent = "";
-    panelTitle.textContent = "Найближчі історичні локації";
+    if (g_latlng == {lat:undefined, lng:undefined} || data.length != 7) { panelTitle.textContent = "Усі історичні локації"; }
+    else { panelTitle.textContent = "Найближчі історичні локації"; };
 
     data.forEach(function (point, index) {
       if (point.coordinates && point.coordinates.length === 2) {
@@ -346,7 +347,7 @@ var g_latlng;
     panelTitle.textContent = DEFAULT_TITLE;
     setRows([]);
     showState("Запитуємо бекенд…");
-    openPanel();
+    if (latlng != {lat:undefined, lng:undefined}) openPanel();
 
     // На широких екранах панель закриває праву частину мапи — зсуваємо мапу
     if (window.innerWidth > 640) {
@@ -359,6 +360,19 @@ var g_latlng;
       .then(function (result) { if (id === requestId) renderResult(result); })
       .catch(function (err) { if (id === requestId) showState(errText(err), true); });
   }
+  function placePeriodPoint(period) {
+    nearestLayer.clearLayers();
+    var id = ++requestId;
+
+    panelTitle.textContent = DEFAULT_TITLE;
+    setRows([]);
+    showState("Запитуємо бекенд…");
+    if (g_latlng != {lat:undefined, lng:undefined}) openPanel();
+
+    askBackend(g_latlng, period)
+      .then(function (result) { if (id === requestId) renderResult(result); })
+      .catch(function (err) { if (id === requestId) showState(errText(err), true); });
+  }
 
   /* --- Події --- */
   // Клік по мапі: нова точка (лише всередині Києва), попередня зникає
@@ -368,15 +382,24 @@ var g_latlng;
       return;
     }
     hideStatus();
-    placeUserPoint(e.latlng, slider.value);
-    g_latlng = e.latlng;
+    if (g_latlng) {
+      placeUserPoint(e.latlng, Math.round(parseFloat(slider.value)).toString());
+      g_latlng = e.latlng;
+    }
   });
   slider.addEventListener("change", function () {
-    placeUserPoint(g_latlng, Math.round(parseFloat(slider.value)).toString());
+    try { placeUserPoint(g_latlng, Math.round(parseFloat(slider.value)).toString()); }
+    catch (e) { placePeriodPoint(Math.round(parseFloat(slider.value)).toString()); }
   });
 
-  panelClose.addEventListener("click", closePanel);
+  panelClose.addEventListener("click", function () {
+    closePanel();
+    g_latlng = {lat:undefined, lng:undefined};
+  });
   document.addEventListener("keydown", function (e) {
-    if (e.key === "Escape" && panel.classList.contains("is-open")) closePanel();
+    if (e.key === "Escape" && panel.classList.contains("is-open")) {
+      closePanel();
+      g_latlng = {lat:undefined, lng:undefined};
+    }
   });
 })();
