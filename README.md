@@ -3,9 +3,10 @@
 
 To launch, download all files and start `server.py` in Python 3.9+ (`python backend/server.py`)
 
-<img width="1919" height="962" alt="example of the page 1" src="https://github.com/user-attachments/assets/8b055ded-84c6-4995-8480-fedbd75ed429" />
-<img width="1919" height="964" alt="example of the page 2" src="https://github.com/user-attachments/assets/307e55a2-a197-4f69-a86e-e9e76acfc7b7" />
-<img width="1267" height="927" alt="example of the page 3" src="https://github.com/user-attachments/assets/3f7b5d1f-8a48-483d-a673-db6ca95e449f" />
+<img width="1920" height="1038" alt="зображення" src="https://github.com/user-attachments/assets/9d226318-afe4-4541-8cd9-9f616c07875d" />
+<img width="1920" height="1036" alt="зображення" src="https://github.com/user-attachments/assets/0cb68994-58b5-42d2-80a2-a2c44f860ce9" />
+<img width="1920" height="1041" alt="зображення" src="https://github.com/user-attachments/assets/ee3eaccd-544f-4087-98d7-31177bcf29d8" />
+<img width="970" height="1040" alt="зображення" src="https://github.com/user-attachments/assets/445ddad0-c5a1-462d-a98c-296ffcf8027c" />
 
 ## Credits
 
