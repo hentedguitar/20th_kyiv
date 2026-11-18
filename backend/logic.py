@@ -78,8 +78,9 @@ def setup():
                             source_url=row["link"],
                         )
                         imported += 1
-                    except (KeyError, TypeError, ValueError):
+                    except (KeyError, TypeError, ValueError) as e:
                         skipped += 1
+                        print(f"Не вдалося імпортувати точку \"{row["name"]}\": {e}")
         except (OSError, UnicodeError, csv.Error) as error:
             print(f"Помилка читання {csv_path.name}: {error}")
 
