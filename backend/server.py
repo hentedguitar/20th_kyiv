@@ -79,7 +79,6 @@ class Handler(SimpleHTTPRequestHandler):
             if not isinstance(payload, dict):
                 raise ValueError("очікувався JSON-об'єкт")
             if payload.get("user_point") != [None, None]:
-                print(payload.get("user_point"))
                 user_point = store.check_coordinates(payload.get("user_point"))   # [latitude, longitude]
             period = payload.get("period")
         except (ValueError, UnicodeDecodeError) as err:

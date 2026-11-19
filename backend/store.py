@@ -136,7 +136,7 @@ def _read_points():
     if not POINTS_FILE.exists():
         return {}
     data = json.loads(POINTS_FILE.read_text(encoding="utf-8"))
-    return {p["id"]: p for p in data}
+    return {p["name"]: p for p in data}
 
 
 def _write_points(points):
@@ -166,17 +166,18 @@ def add_point(name, date, period, description, coordinates, source_url=""):
         raise ValueError("description: не більше 1000 символів")
 
     point = {
-        "id": _parse_id(name),
+        "name": _parse_id(name),
         "date": _parse_date(date),
         "period": _parse_period(period),
         "description": description,
         "coordinates": check_coordinates(coordinates),
-        "source_url": str(source_url).strip(),
+        "link": str(source_url).strip(),
     }
-    with _lock:
-        points = _read_points()
-        points[point["id"]] = point
-        _write_points(points)
+    if not POINTS_FILE.exists():
+        with _lock:
+            points = _read_points()
+            points[point["name"]] = point
+            _write_points(points)
     return point
 
 
@@ -205,5 +206,5 @@ def get_points_period(period):
         return [value for value in _read_points().values() if str(value["period"]) == period]
 
 
-# Публічна назва для перевірки епохи (використовує server.py)
-parse_period = _parse_period
+parse_period = _parse_period    # Публічна назва для перевірки епохи (використовує server.py)
+read_points = _read_points      # Публічна назва для зчитування точок (викор. logic.py)
