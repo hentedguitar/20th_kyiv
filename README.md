@@ -10,7 +10,7 @@ To launch, download all files and start `server.py` in Python 3.9+ (`python back
 
 ## Credits
 
-Thanks to my friends and colleagues on the hackathon, who pitched the idea of 20th Kyiv and helped with writing the code and connecting the data for the project! <3
+Thanks to my friends and colleagues on the hackathon, who pitched the idea of 20th Kyiv and helped with writing the code and collecting the data for the project! <3
 
 Also thanks to OpenStreetMap and Leaflet for making it possible to use its API for the map, and to Wikipedia for hosting all the information used in the `data` folder!
 
