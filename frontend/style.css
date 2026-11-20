@@ -401,13 +401,13 @@ body {
   transition: opacity 0.2s ease, visibility 0s linear 0.2s;
 }
 .point-panel.is-open {
-  opacity: 0.85;
+  opacity: 0.75;
   visibility: visible;
   transition: opacity 0.2s ease, visibility 0s;
 }
 
 .point-panel.is-open p dl h2 {
-  opacity: 1;
+  opacity: 2;
   visibility: visible;
 }
 
