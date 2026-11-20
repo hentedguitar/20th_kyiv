@@ -337,6 +337,19 @@ var g_latlng = {lat:undefined, lng:undefined};
     nearestLayer.clearLayers();
   }
 
+  var about = document.getElementById("about-popup");
+  var aboutClose = document.getElementById("about-close");
+
+  function openAbout() {
+    about.classList.add("is-open");
+    about.setAttribute("aria-hidden", "false");
+    aboutClose.focus( { preventScroll: true });
+  }
+  function closeAbout() {
+    about.classList.remove("is-open");
+    about.setAttribute("aria-hidden", "true");
+  }
+
   function placeUserPoint(latlng, period) {
     nearestLayer.clearLayers();
     if (userMarker) map.removeLayer(userMarker);   // попередня точка зникає
@@ -395,10 +408,15 @@ var g_latlng = {lat:undefined, lng:undefined};
     closePanel();
     g_latlng = {lat:undefined, lng:undefined};
   });
+
   document.addEventListener("keydown", function (e) {
-    if (e.key === "Escape" && panel.classList.contains("is-open")) {
-      closePanel();
-      g_latlng = {lat:undefined, lng:undefined};
+    if (e.key === "Escape") {
+      if (about.classList.contains("is-open") && panel.classList.contains("is-open")) closeAbout();
+      else if (about.classList.contains("is-open")) closeAbout();
+      else if (panel.classList.contains("is-open")) {
+        closePanel();
+        g_latlng = {lat:undefined, lng:undefined};
+      }
     }
   });
 })();
