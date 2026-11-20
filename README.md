@@ -1,4 +1,7 @@
 # 20th Kyiv
+
+[![en](https://img.shields.io/badge/lang-en-5764f3.svg)](https://github.com/hentedguitar/20th_kyiv/blob/main/README.md) [![ua](https://img.shields.io/badge/lang-ua-e5a248.svg)](https://github.com/hentedguitar/20th_kyiv/blob/main/README.ua.md)
+
 An interactive map of Kyiv's history throughout the 20th century (1917-1991), originally made as a project for hackathon CS201
 
 To launch, download all files and start `server.py` in Python 3.9+ (`python backend/server.py`)
