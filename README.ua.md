@@ -1,4 +1,7 @@
 # Двадцятий Київ
+
+[![en](https://img.shields.io/badge/lang-en-5764f3.svg)](https://github.com/hentedguitar/20th_kyiv/blob/main/README.md) [![ua](https://img.shields.io/badge/lang-ua-e5a248.svg)](https://github.com/hentedguitar/20th_kyiv/blob/main/README.ua.md)
+
 Інтерактивна мапа Києва впродовж XX століття (1917-1991 рр.), започаткована як проєкт на хакатон CS201
 
 Щоб запустити, завантажте усі файли та запустіть `server.py` у Python 3.9+ (`python backend/server.py`)
