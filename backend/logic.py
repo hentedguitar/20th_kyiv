@@ -3,8 +3,6 @@
 import csv
 import math
 from pathlib import Path
-import json
-
 import store
 
 DATA_DIR = Path(__file__).resolve().parent.parent / "data"
@@ -66,13 +64,13 @@ def setup():
         print("Імпортуємо з data/*.csv...")
         for csv_path in sorted(DATA_DIR.glob("*.csv")):
             try:
-                with csv_path.open("r", encoding="utf-8-sig", newline="") as file:
+                with csv_path.open("r", encoding="utf-8") as file:
                     for line in file:
                         row = _parse_csv_row(line)
                         if row is None:
                             continue
                         try:
-                            store.add_point(
+                            point = store.add_point(
                                 name=row["name"],
                                 date=_normalize_date(row["date"]),
                                 period=row["period"],
@@ -86,24 +84,11 @@ def setup():
                             print(f"Не вдалося імпортувати точку \"{row["name"]}\": {e}")
             except (OSError, UnicodeError, csv.Error) as error:
                 print(f"Помилка читання {csv_path.name}: {error}")
+        print(f"Імпорт завершено: {imported} рядків; пропущено: {skipped}; унікальних точок: {len(store.get_points())}.")
     else:
-        print("Імпортуємо з points.json...")
-        for point in store.read_points().values():
-            try:
-                store.add_point(
-                    name=point["name"],
-                    date=_normalize_date(point["date"]),
-                    period=point["period"],
-                    description=point["description"],
-                    coordinates=point["coordinates"],
-                    source_url=point["link"]
-                )
-                imported += 1
-            except (KeyError, TypeError, ValueError) as e:
-                skipped += 1
-                print(f"Не вдалося імпортувати точку \"{point["name"]}\": {e}")
+        print(f"Файл points.json вже існує - імпортувати точки не потрібно. \nУнікальних точок: {len(store.get_points())}")
 
-    print(f"Імпорт завершено: {imported} рядків; пропущено: {skipped}; унікальних точок: {len(store.get_points())}.")
+    
 
 
 def distance_m(a, b):

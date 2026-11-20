@@ -173,11 +173,10 @@ def add_point(name, date, period, description, coordinates, source_url=""):
         "coordinates": check_coordinates(coordinates),
         "link": str(source_url).strip(),
     }
-    if not POINTS_FILE.exists():
-        with _lock:
-            points = _read_points()
-            points[point["name"]] = point
-            _write_points(points)
+    with _lock:
+        points = _read_points()
+        points[point["name"]] = point
+        _write_points(points)
     return point
 
 
@@ -208,3 +207,4 @@ def get_points_period(period):
 
 parse_period = _parse_period    # Публічна назва для перевірки епохи (використовує server.py)
 read_points = _read_points      # Публічна назва для зчитування точок (викор. logic.py)
+write_points = _write_points
