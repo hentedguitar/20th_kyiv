@@ -319,7 +319,6 @@ var g_latlng = {lat:undefined, lng:undefined};
     dataList.hidden = false;
   }
 
-
   function openPanel() {
     panel.classList.add("is-open");
     panel.setAttribute("aria-hidden", "false");

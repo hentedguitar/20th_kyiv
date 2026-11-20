@@ -24,10 +24,9 @@
   </script>
 </head>
 <body>
-
   <header class="topbar">
     <h1 class="topbar__title">Двадцятий Київ</h1>
-
+    <button class="about" id="about" type="button" onclick="openAbout()">?</button>
     <button class="theme-toggle" id="theme-toggle" type="button" role="switch" aria-checked="false" aria-label="Темна тема">
       <span class="theme-toggle__label">Світла</span>
       <span class="theme-toggle__track" aria-hidden="true"><span class="theme-toggle__thumb"></span></span>
@@ -58,7 +57,7 @@
   </section>
 
   <main class="map-wrap">
-    <div id="map" role="application" aria-label="Мапа районів Києва. Натисніть, щоб поставити точку"></div>
+    <div id="map" role="application" aria-label="Мапа Києва. Натисніть, щоб поставити точку"></div>
 
     <p class="map-status" id="map-status" role="status" hidden></p>
 
@@ -73,9 +72,35 @@
       <p class="point-panel__state" id="point-state" role="status">Запитуємо бекенд…</p>
       <dl class="point-panel__meta" id="point-data" hidden></dl>
     </aside>
-
   </main>
 
+  <div class="outer_about_popup" id="about-popup" aria-hidden="true">
+    <div class="inner_about_popup">
+      <div class="topbar__about">
+        <h1 class="about__title">Що це?</h1>
+        <button class="about__popup__close" id="about-close" type="button" aria-label="Закрити панель" onclick="closeAbout()">&times;</button>
+      </div>
+      <p><b>Двадцятий Київ</b> - інтерактивна мапа Києва впродовж XX століття (1917-1991 рр.), започаткована як проєкт на хакатон CS201.</p>
+      <h2>Подяки</h2>
+      <p>Дякую своїм друзям та колегам на хакатоні, які запропонували ідею Двадцятого Києва та допомогли з написанням коду та зі збором даних для цього проєкту!</p>
+      <p>Також дякую OpenStreetMap та Leaflet за можливість використовувати їхній API для мапи, а також Вікіпедії за те, що вся інформація, що знаходиться у теці "data", була взята з неї!</p>
+    </div>
+  </div>
+
+  <script>
+    var about = document.getElementById("about-popup");
+    var aboutClose = document.getElementById("about-close");
+
+    function openAbout() {
+      about.classList.add("is-open");
+      about.setAttribute("aria-hidden", "false");
+      aboutClose.focus( { preventScroll: true });
+    }
+    function closeAbout() {
+      about.classList.remove("is-open");
+      about.setAttribute("aria-hidden", "true");
+    }
+  </script>
   <script src="kyiv_outline.js"></script>
   <script src="app.js"></script>
 </body>
