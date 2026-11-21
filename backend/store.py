@@ -21,6 +21,7 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent
 OUTLINE_FILE = BASE_DIR / "kyiv_outline.txt"
 POINTS_FILE = BASE_DIR / "points.json"
+HASHES_FILE = BASE_DIR / "hashes.json"
 
 YEAR_MIN, YEAR_MAX = 1917, 1991
 PERIODS = {
@@ -145,6 +146,18 @@ def _write_points(points):
     with os.fdopen(fd, "w", encoding="utf-8") as tmp:
         json.dump(list(points.values()), tmp, ensure_ascii=False, indent=2)
     os.replace(tmp_name, POINTS_FILE)
+
+def read_hashes():
+    if not HASHES_FILE.exists():
+        return {}
+    data = json.loads(HASHES_FILE.read_text(encoding="utf-8"))
+    return {p["period"]: p for p in data}
+
+def write_hashes(hashes):
+    fd, tmp_name = tempfile.mkstemp(dir=BASE_DIR, suffix=".tmp")
+    with os.fdopen(fd, "w", encoding="utf-8") as tmp:
+        json.dump(list(hashes.values()), tmp, ensure_ascii=False, indent=2)
+    os.replace(tmp_name, HASHES_FILE)
 
 # ---------- Публічні функції ----------
 

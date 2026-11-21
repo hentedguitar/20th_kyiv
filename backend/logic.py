@@ -3,10 +3,14 @@
 import csv
 import math
 from pathlib import Path
+import hashlib
+import threading
 import store
 
 DATA_DIR = Path(__file__).resolve().parent.parent / "data"
 POINTS_FILE = Path(__file__).resolve().parent / "points.json"
+HASHES_FILE = Path(__file__).resolve().parent / "hashes.json"
+BUF_SIZE = 65536
 
 def _parse_csv_row(line):
     """Розбирає рядок із комою або крапкою з комою як роздільником.
@@ -65,12 +69,13 @@ def setup():
         for csv_path in sorted(DATA_DIR.glob("*.csv")):
             try:
                 with csv_path.open("r", encoding="utf-8") as file:
+                    file.seek(0)
                     for line in file:
                         row = _parse_csv_row(line)
                         if row is None:
                             continue
                         try:
-                            point = store.add_point(
+                            store.add_point(
                                 name=row["name"],
                                 date=_normalize_date(row["date"]),
                                 period=row["period"],
@@ -83,11 +88,50 @@ def setup():
                             skipped += 1
                             print(f"Не вдалося імпортувати точку \"{row["name"]}\": {e}")
             except (OSError, UnicodeError, csv.Error) as error:
-                print(f"Помилка читання {csv_path.name}: {error}")
+                print(f"Помилка читання \"{csv_path.name}\": {error}")
         print(f"Імпорт завершено: {imported} рядків; пропущено: {skipped}; унікальних точок: {len(store.get_points())}.")
     else:
         print(f"Файл points.json вже існує - імпортувати точки не потрібно. \nУнікальних точок: {len(store.get_points())}")
 
+    imported_hashes = 0
+    skipped_hashes = 0
+    if not HASHES_FILE.exists():    # create hashes.json file
+        print("Імпортуємо хеш-значення з data/*.csv...")
+        for csv_path in sorted(DATA_DIR.glob("*.csv")):
+            try:
+                with csv_path.open("r", encoding="utf-8") as file:
+                    try:
+                        _lock = threading.RLock()
+                        file.seek(0)
+                        md5 = hashlib.md5()
+                        while True:
+                            data = file.read(BUF_SIZE)
+                            if not data:
+                                break
+                            md5.update(data.encode("utf-8"))
+                    except Exception as e:
+                        print(f"Не вдалося створити хеш-значення \"{csv_path.name}\": {e}")
+                        skipped_hashes += 1
+
+                    try:
+                        file.seek(0)
+                        reader = csv.reader(file)
+                        header = next(reader)
+                        row1 = next(reader)
+                        with _lock:
+                            hashes = store.read_hashes()
+                            period = int(row1[2])
+                            hashes[period] = {"period": period, "hash": md5.hexdigest()}
+                            store.write_hashes({key: value for key, value in sorted(hashes.items(), key=lambda item: item[0])})
+                            imported_hashes += 1
+                    except Exception as e:
+                        print(f"Не вдалося додати хеш-значення \"{csv_path.name}\" до hashes.json: {e}")
+                        skipped_hashes += 1
+            except (OSError, UnicodeError, csv.Error) as error:
+                print(f"Помилка читання \"{csv_path.name}\": {error}")
+        print(f"Імпорт завершено: {imported_hashes} рядків; пропущено: {skipped_hashes}; унікальних точок: {len(store.read_hashes())}.")
+    else:   # check every data/*.csv file for the same hash value
+        print(f"Файл hashes.json вже існує - імпортувати хеш-значення не потрібно. \nУнікальних хеш-значень: {len(store.read_hashes())}")
     
 
 
